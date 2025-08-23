@@ -8,7 +8,7 @@
 import Foundation
 
 /// Params `country` and `country` can't be used with `sources`. It's one or the other.
-public struct TopHeadlinesEndpoint: NewsEndpoint {
+public struct TopHeadlinesEndpoint: NewsEndpoint, Paginatable {
     public typealias Response = TopHeadlinesResponse
 
     public let restfulEndpoint = Restful(
