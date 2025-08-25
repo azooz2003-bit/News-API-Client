@@ -14,8 +14,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         // Insert code here to initialize your application
-        mainWindowController = MainWindowController()
-        mainWindowController.showWindow(self)
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
