@@ -19,9 +19,6 @@ class MainSplitViewController: NSSplitViewController {
 //            NSSplitViewItem(viewController: NewsListViewController()),
         ]
 
-        for splitViewItem in splitViewItems {
-            addSplitViewItem(splitViewItem)
-        }
         self.splitViewItems = splitViewItems
     }
 }
