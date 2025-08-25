@@ -1,8 +1,8 @@
 //
 //  ViewController.swift
-//  NewsClient
+//  News API Client
 //
-//  Created by Abdulaziz Albahar on 8/22/25.
+//  Created by Abdulaziz Albahar on 8/24/25.
 //
 
 import Cocoa

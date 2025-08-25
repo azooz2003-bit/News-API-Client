@@ -1,12 +1,11 @@
 //
 //  AppDelegate.swift
-//  NewsClient
+//  News API Client
 //
-//  Created by Abdulaziz Albahar on 8/22/25.
+//  Created by Abdulaziz Albahar on 8/24/25.
 //
 
 import Cocoa
-import NewsAPI
 
 @main
 class AppDelegate: NSObject, NSApplicationDelegate {
@@ -16,7 +15,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         // Insert code here to initialize your application
         mainWindowController = MainWindowController()
-        mainWindowController.showWindow(nil)
+        mainWindowController.showWindow(self)
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {

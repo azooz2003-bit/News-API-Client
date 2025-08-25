@@ -2,9 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:NewsAPI/NewsAPI.xcodeproj">
+      location = "group:News API Client/News API Client.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:NewsClient/NewsClient.xcodeproj">
+      location = "group:NewsAPI/NewsAPI.xcodeproj">
    </FileRef>
 </Workspace>
