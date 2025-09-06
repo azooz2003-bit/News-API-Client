@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="24112" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="24112"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Sidebar View Controller-->
+        <scene sceneID="PEd-7d-5j0">
+            <objects>
+                <viewController storyboardIdentifier="SidebarViewController" id="bU7-R8-ocO" customClass="SidebarViewController" customModule="News_API_Client" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="tOy-S4-hL0">
+                        <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5LJ-VH-ih4">
+                                <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
+                                <clipView key="contentView" id="j8d-rb-MNo">
+                                    <rect key="frame" x="1" y="1" width="431" height="298"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <view id="KOe-Cv-hKU">
+                                            <rect key="frame" x="0.0" y="0.0" width="416" height="283"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        </view>
+                                    </subviews>
+                                </clipView>
+                                <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="bwO-fa-e1X">
+                                    <rect key="frame" x="-100" y="-100" width="164" height="17"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </scroller>
+                                <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="Mdz-xN-Bqi">
+                                    <rect key="frame" x="432" y="1" width="17" height="298"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </scroller>
+                            </scrollView>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="5LJ-VH-ih4" firstAttribute="top" secondItem="tOy-S4-hL0" secondAttribute="top" id="EAy-9b-7T9"/>
+                            <constraint firstAttribute="trailing" secondItem="5LJ-VH-ih4" secondAttribute="trailing" id="IEI-bH-cS8"/>
+                            <constraint firstAttribute="bottom" secondItem="5LJ-VH-ih4" secondAttribute="bottom" id="wWL-sY-p1l"/>
+                            <constraint firstItem="5LJ-VH-ih4" firstAttribute="leading" secondItem="tOy-S4-hL0" secondAttribute="leading" id="xGR-Jn-h0K"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="scrollView" destination="5LJ-VH-ih4" id="PwC-X7-WaS"/>
+                    </connections>
+                </viewController>
+                <customObject id="9uD-mB-xHs" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="139" y="131"/>
+        </scene>
+    </scenes>
+</document>

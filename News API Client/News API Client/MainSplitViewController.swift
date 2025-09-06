@@ -8,6 +8,8 @@
 import Cocoa
 
 class MainSplitViewController: NSSplitViewController {
+    var sidebarVC: SidebarViewController!
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -15,8 +17,10 @@ class MainSplitViewController: NSSplitViewController {
     }
 
     private func setupSplitView() {
+        self.sidebarVC = SidebarViewController.create()
+
         let splitViewItems: [NSSplitViewItem] = [
-//            NSSplitViewItem(viewController: NewsListViewController()),
+            NSSplitViewItem(sidebarWithViewController: sidebarVC),
         ]
 
         self.splitViewItems = splitViewItems
