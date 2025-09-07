@@ -40,6 +40,8 @@ class SidebarViewController: NSViewController {
         stackView.spacing = 16
         stackView.translatesAutoresizingMaskIntoConstraints = false
 
+        scrollView.documentView = stackView
+
         NSLayoutConstraint.activate([
             stackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
             stackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
