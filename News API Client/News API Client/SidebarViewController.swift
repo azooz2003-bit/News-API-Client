@@ -39,6 +39,8 @@ class SidebarViewController: NSViewController {
         stackView.orientation = .vertical
         stackView.spacing = 16
         stackView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.autohidesScrollers = true
+        scrollView.scrollerStyle = .overlay
 
         scrollView.documentView = stackView
 
