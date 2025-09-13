@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct TopHeadlinesResponse: Decodable {
+public struct TopHeadlinesResponse: Decodable, PaginationResulting {
     public struct Article: Decodable {
         public struct Source: Decodable {
             public let id: String?
