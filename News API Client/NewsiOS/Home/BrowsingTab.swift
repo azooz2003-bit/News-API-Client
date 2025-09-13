@@ -28,4 +28,13 @@ enum BrowsingTab {
                 .apple
         }
     }
+
+    var tintColor: UIColor {
+        switch self {
+        case .topHeadlines:
+            return .systemMint
+        case .apple:
+            return .systemTeal
+        }
+    }
 }

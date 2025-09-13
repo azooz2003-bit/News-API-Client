@@ -12,7 +12,7 @@ class HomeViewController: UITableViewController {
         [.topHeadlines, .apple]
     }
     var favoritesList: [String] {
-        []
+        ["sample 1", "sample 2", "sample 3"]
     }
 
     override func viewDidLoad() {
@@ -24,21 +24,32 @@ class HomeViewController: UITableViewController {
 
     private func setupNavigationBar() {
         navigationItem.title = "News"
+
+        let appearance = UINavigationBarAppearance()
+        appearance.backgroundEffect = UIBlurEffect(style: .systemUltraThinMaterialLight)
+        navigationItem.standardAppearance = appearance
+
+        // TODO: REMOVE
+        navigationItem.style = .browser
+        navigationItem.rightBarButtonItems = [
+            UIBarButtonItem(barButtonSystemItem: .camera, target: self, action: #selector(exampleAction)),
+            UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(exampleAction))
+        ]
+    }
+
+    @objc
+    func exampleAction() {
+        print("TEST")
     }
 
     private func setupTableView() {
         tableView.showsVerticalScrollIndicator = false
         tableView.separatorStyle = .none
-        tableView.backgroundColor = .clear
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 200
 
         tableView.register(BrowsingTabsContainerCell.self, forCellReuseIdentifier: BrowsingTabsContainerCell.identifier)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell") // TODO: switch to custom news item cell
-    }
-
-    private func setupBrowsingTabs() {
-
     }
 }
 
@@ -70,7 +81,7 @@ extension HomeViewController {
             case 1:
                 // TODO: use row from favorites[indexpath.row]
                 let cell = tableView.dequeueReusableCell(withIdentifier: "cell")
-                cell?.textLabel?.text = "Favorite item \(indexPath.row + 1)"
+                cell?.textLabel?.text = favoritesList[indexPath.row]
                 return cell
             default:
                 preconditionFailure("Table view section count should never exceed 2.")
@@ -107,7 +118,7 @@ extension HomeViewController {
         
         switch indexPath.section {
         case 0:
-            // Browsing tabs section - selection handled by collection view inside cell
+            // Browsing tabs section - ignore selection
             break
         case 1:
             // Handle favorites selection
@@ -131,12 +142,25 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BrowsingTabCell.identifier, for: indexPath)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BrowsingTabCell.identifier, for: indexPath) as! BrowsingTabCell
+        cell.browsingTab = browsingTabs[indexPath.row]
         // TODO: configure cell
         return cell
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: true)
+
+        navigationController?.pushViewController(HomeViewController(), animated: true)
         print("Selected item at index \(indexPath)")
     }
+}
+
+#Preview {
+    let homeVC = HomeViewController()
+    let vc = UINavigationController(rootViewController: homeVC)
+
+    homeVC.view.backgroundColor = .systemBackground
+
+    return vc
 }

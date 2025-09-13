@@ -7,6 +7,13 @@
 
 import UIKit
 
-class NewsListViewController: UIViewController {
+class NewsListViewController: UITableViewController {
+    override func viewDidLoad() {
+
+    }
+
+    private func setupNavigationBar() {
+        navigationItem.title = "News"
+    }
 
 }
