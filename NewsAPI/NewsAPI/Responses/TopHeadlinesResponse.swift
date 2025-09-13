@@ -8,21 +8,6 @@
 import Foundation
 
 public struct TopHeadlinesResponse: Decodable, PaginationResulting {
-    public struct Article: Decodable {
-        public struct Source: Decodable {
-            public let id: String?
-            public let name: String
-        }
-
-        public let author: String?
-        public let title: String
-        public let description: String?
-        public let url: URL
-        public let urlToImage: URL?
-        public let publishedAt: Date?
-        public let content: String?
-    }
-
     public let status: ResultStatus
     public let totalResults: Int
     public let articles: [Article]
@@ -32,4 +17,19 @@ public struct TopHeadlinesResponse: Decodable, PaginationResulting {
         self.totalResults = totalResults
         self.articles = articles
     }
+}
+
+public struct Article: Decodable {
+    public struct Source: Decodable {
+        public let id: String?
+        public let name: String
+    }
+
+    public let author: String?
+    public let title: String
+    public let description: String?
+    public let url: URL
+    public let urlToImage: URL?
+    public let publishedAt: Date?
+    public let content: String?
 }

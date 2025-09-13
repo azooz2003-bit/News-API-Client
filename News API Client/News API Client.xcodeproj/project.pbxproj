@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A3950A102E761A6000F62E4A /* NewsAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A39627B42E5BE1BF00905086 /* NewsAPI.framework */; };
+		A3950A112E761A6000F62E4A /* NewsAPI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A39627B42E5BE1BF00905086 /* NewsAPI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A39627B52E5BE1BF00905086 /* NewsAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A39627B42E5BE1BF00905086 /* NewsAPI.framework */; };
 		A39627B62E5BE1BF00905086 /* NewsAPI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A39627B42E5BE1BF00905086 /* NewsAPI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
@@ -29,6 +31,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		A3950A122E761A6000F62E4A /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				A3950A112E761A6000F62E4A /* NewsAPI.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A39627B72E5BE1BF00905086 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -81,6 +94,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A3950A102E761A6000F62E4A /* NewsAPI.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -148,6 +162,7 @@
 				A39509752E74755B00F62E4A /* Sources */,
 				A39509762E74755B00F62E4A /* Frameworks */,
 				A39509772E74755B00F62E4A /* Resources */,
+				A3950A122E761A6000F62E4A /* Embed Frameworks */,
 			);
 			buildRules = (
 			);

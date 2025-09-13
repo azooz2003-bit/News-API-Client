@@ -8,16 +8,6 @@
 import Foundation
 
 public struct SourcesResponse: Decodable {
-    public struct Source: Decodable {
-        public let id: String
-        public let name: String
-        public let description: String
-        public let url: URL
-        public let category: NewsCategory
-        public let language: String
-        public let country: String
-    }
-
     public let status: ResultStatus
     public let sources: [Source]
 
@@ -25,4 +15,14 @@ public struct SourcesResponse: Decodable {
         self.status = status
         self.sources = sources
     }
+}
+
+public struct Source: Decodable {
+    public let id: String
+    public let name: String
+    public let description: String
+    public let url: URL
+    public let category: NewsCategory
+    public let language: String
+    public let country: String
 }

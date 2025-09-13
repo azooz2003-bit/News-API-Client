@@ -6,12 +6,13 @@
 //
 
 import UIKit
+import NewsAPI
 
 class HomeViewController: UITableViewController {
     var browsingTabs: [BrowsingTab] {
         [.topHeadlines, .apple]
     }
-    var favoritesList: [String] {
+    var favoritesList: [Article] {
         ["sample 1", "sample 2", "sample 3"]
     }
 
@@ -149,9 +150,16 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        collectionView.deselectItem(at: indexPath, animated: true)
+//        collectionView.deselectItem(at: indexPath, animated: true)
 
-        navigationController?.pushViewController(HomeViewController(), animated: true)
+        switch indexPath.row {
+        case 0:
+            navigationController?.pushViewController(TopHeadlinesViewController(), animated: true)
+        case 1:
+            navigationController?.pushViewController(AppleNewsViewController(), animated: true)
+        default:
+            break
+        }
         print("Selected item at index \(indexPath)")
     }
 }
