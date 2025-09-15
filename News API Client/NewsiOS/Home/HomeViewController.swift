@@ -12,45 +12,62 @@ class HomeViewController: UITableViewController {
     var browsingTabs: [BrowsingTab] {
         [.topHeadlines, .apple]
     }
-    var favoritesList: [Article] {
-        ["sample 1", "sample 2", "sample 3"]
-    }
+    var moreButton: UIBarButtonItem!
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         setupNavigationBar()
+        setupPrefMenu()
         setupTableView()
     }
 
     private func setupNavigationBar() {
         navigationItem.title = "News"
 
-        let appearance = UINavigationBarAppearance()
-        appearance.backgroundEffect = UIBlurEffect(style: .systemUltraThinMaterialLight)
-        navigationItem.standardAppearance = appearance
-
-        // TODO: REMOVE
         navigationItem.style = .browser
+        navigationItem.standardAppearance = UINavigationBarAppearance()
+        navigationItem.standardAppearance?.backgroundEffect = UIBlurEffect(style: .systemUltraThinMaterial)
+
+        moreButton = UIBarButtonItem(image: .ellipsis, menu: UIMenu())
         navigationItem.rightBarButtonItems = [
-            UIBarButtonItem(barButtonSystemItem: .camera, target: self, action: #selector(exampleAction)),
-            UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(exampleAction))
+            moreButton,
+            UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(reload))
         ]
     }
 
+    private func setupPrefMenu() {
+        let menu = UIMenu(image: .ellipsis, options: [], children: [
+            UIAction(title: "Enable mock data", image: Preferences.mockDataEnabled ? .checkmark : nil, handler: { [weak self] action in
+                Preferences.mockDataEnabled.toggle()
+                self?.setupPrefMenu()
+            }),
+            UIAction(title: "Simulate long image loading", image: Preferences.shouldSimulateLongImageLoadTime ? .checkmark : nil, handler: { [weak self] action in
+                Preferences.shouldSimulateLongImageLoadTime.toggle()
+                self?.setupPrefMenu()
+            }),
+        ])
+
+        self.moreButton.menu = menu
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        tableView.reloadData()
+    }
+
     @objc
-    func exampleAction() {
-        print("TEST")
+    func reload() {
+        tableView.reloadData()
     }
 
     private func setupTableView() {
         tableView.showsVerticalScrollIndicator = false
         tableView.separatorStyle = .none
-        tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 200
+        tableView.contentInset.top = 20
 
         tableView.register(BrowsingTabsContainerCell.self, forCellReuseIdentifier: BrowsingTabsContainerCell.identifier)
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell") // TODO: switch to custom news item cell
+        tableView.register(UINib(nibName: NewsItemCell.identifier, bundle: nil), forCellReuseIdentifier: NewsItemCell.identifier)
     }
 }
 
@@ -62,7 +79,7 @@ extension HomeViewController {
         case 0:
             return 1 // Single cell containing collection view of browsing tabs
         case 1:
-            return favoritesList.count // TODO: change to count in actual favorites list
+            return UserDefaults.favoriteArticles.count // TODO: change to count in actual favorites list
         default:
             preconditionFailure("Table view section count should never exceed 2.")
         }
@@ -80,9 +97,9 @@ extension HomeViewController {
                 cell?.setCollectionViewDataSourceDelegate(self)
                 return cell
             case 1:
-                // TODO: use row from favorites[indexpath.row]
-                let cell = tableView.dequeueReusableCell(withIdentifier: "cell")
-                cell?.textLabel?.text = favoritesList[indexPath.row]
+                let cell = tableView.dequeueReusableCell(withIdentifier: NewsItemCell.identifier) as? NewsItemCell
+                cell?.configure(article: UserDefaults.favoriteArticles[indexPath.row], delegate: self)
+                // TODO: set isFav properly (UserDefaults)
                 return cell
             default:
                 preconditionFailure("Table view section count should never exceed 2.")
@@ -123,10 +140,22 @@ extension HomeViewController {
             break
         case 1:
             // Handle favorites selection
-            // TODO: Navigate to news detail or news list
+            // TODO: Navigate to news detail
             break
         default:
             break
+        }
+    }
+
+
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        switch indexPath.section {
+        case 0:
+            return UITableView.automaticDimension
+        case 1:
+            return UITableView.automaticDimension
+        default:
+            return 0
         }
     }
 }
@@ -145,12 +174,10 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BrowsingTabCell.identifier, for: indexPath) as! BrowsingTabCell
         cell.browsingTab = browsingTabs[indexPath.row]
-        // TODO: configure cell
         return cell
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        collectionView.deselectItem(at: indexPath, animated: true)
 
         switch indexPath.row {
         case 0:
@@ -164,11 +191,26 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
     }
 }
 
+extension HomeViewController: NewsItemCellDelegate {
+    func isFavorite(_ article: Article) -> Bool {
+        UserDefaults.favoriteArticles.contains(where: { $0.id == article.id })
+    }
+    func favoritedIsSet(_ isFavorite: Bool, for article: Article) {
+
+        if isFavorite {
+            UserDefaults.favoriteArticles.append(article)
+        } else {
+            UserDefaults.favoriteArticles.removeAll { $0.id == article.id }
+        }
+
+        tableView.reloadData()
+    }
+}
+
 #Preview {
     let homeVC = HomeViewController()
+    UserDefaults.favoriteArticles = Article.preview
     let vc = UINavigationController(rootViewController: homeVC)
-
-    homeVC.view.backgroundColor = .systemBackground
 
     return vc
 }

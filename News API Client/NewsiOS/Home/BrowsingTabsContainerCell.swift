@@ -36,7 +36,6 @@ class BrowsingTabsContainerCell: UITableViewCell {
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.isScrollEnabled = false
         collectionView.backgroundColor = .clear
-        // TODO: register cell
         collectionView.register(BrowsingTabCell.self, forCellWithReuseIdentifier: BrowsingTabCell.identifier)
 
         contentView.addSubview(collectionView)

@@ -19,7 +19,8 @@ public struct TopHeadlinesResponse: Decodable, PaginationResulting {
     }
 }
 
-public struct Article: Decodable {
+public struct Article: Codable, Identifiable, Equatable {
+    public var id: URL { url }
     public struct Source: Decodable {
         public let id: String?
         public let name: String

@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension JSONDecoder {
+public extension JSONDecoder {
     static var shared: JSONDecoder {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601

@@ -20,11 +20,28 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
 
+        configureAppearances()
         setupHome()
 
         let navController = UINavigationController(rootViewController: homeVC)
         window?.rootViewController = navController
         window?.makeKeyAndVisible()
+    }
+
+    func configureAppearances() {
+        // UI label
+        UILabel.appearance().textColor = .systemBlue
+
+        // Nav bar title
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+
+        appearance.titleTextAttributes = [.foregroundColor: UIColor.systemBlue]
+        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.systemBlue]
+
+        UINavigationBar.appearance().standardAppearance = appearance
+        UINavigationBar.appearance().compactAppearance = appearance
+        UINavigationBar.appearance().scrollEdgeAppearance = appearance
     }
 
     func setupHome() {

@@ -12,4 +12,6 @@ extension UIImage {
     static let apple = UIImage(systemName: "applelogo") ?? UIImage()
     static let heartFilled = UIImage(systemName: "heart.fill") ?? UIImage()
     static let heartEmpty = UIImage(systemName: "heart") ?? UIImage()
+    static let photo = UIImage(systemName: "photo") ?? UIImage()
+    static let ellipsis = UIImage(systemName: "ellipsis") ?? UIImage()
 }

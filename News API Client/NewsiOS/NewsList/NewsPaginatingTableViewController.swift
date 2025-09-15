@@ -6,30 +6,60 @@
 //
 
 import UIKit
+import NewsAPI
+import Combine
 
 protocol NewsPaginatingTableViewControllerDelegate: AnyObject {
+    var isLoadingPage: Bool { get set }
     func didReachEndOfPage()
 }
 
 class NewsPaginatingTableViewController: UITableViewController {
-    weak var delegate: NewsPaginatingTableViewControllerDelegate!
+    weak var delegate: NewsPaginatingTableViewControllerDelegate?
+    weak var newsItemDelegate: NewsItemCellDelegate?
 
-    // TODO: change to [NewsItem]
-    var newsItems: [String] = [
-        "Alex's Mission",
-        "Alex's Mission",
-        "Alex's Mission",
-        "Alex's Mission"
-    ]
+    private var articles: ReadOnlyCurrentValuePublisher<[Article], Never>
+    private var cancellables: Set<AnyCancellable> = []
+
+    init(delegate: NewsPaginatingTableViewControllerDelegate?, newsItemDelegate: NewsItemCellDelegate?, articles: ReadOnlyCurrentValuePublisher<[Article], Never>) {
+        self.delegate = delegate
+        self.newsItemDelegate = newsItemDelegate
+        self.articles = articles
+
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError()
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         setupTableView()
+
+        articles
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] articles in
+                self?.tableView.reloadData()
+            }
+            .store(in: &cancellables)
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        tableView.reloadData()
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        for cell in tableView.visibleCells {
+            if let cell =  cell as? NewsItemCell {
+                cell.imageLoadingTask?.cancel()
+            }
+        }
     }
 
     private func setupTableView() {
-        tableView.rowHeight = 100
+        tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 100
         tableView.dataSource = self
         tableView.delegate = self
@@ -44,11 +74,14 @@ class NewsPaginatingTableViewController: UITableViewController {
 
 extension NewsPaginatingTableViewController {
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let offsetY = scrollView.contentOffset.y
-        let contentHeight = scrollView.contentSize.height
+        guard let delegate else { return }
 
-        if offsetY > contentHeight - scrollView.frame.height {
-//            delegate.didReachEndOfPage()
+        let height = scrollView.frame.size.height
+        let contentYOffset = scrollView.contentOffset.y
+        let distanceFromBottom = scrollView.contentSize.height - contentYOffset
+
+        if !delegate.isLoadingPage, distanceFromBottom < height {
+            delegate.didReachEndOfPage()
         }
     }
 
@@ -65,8 +98,8 @@ extension NewsPaginatingTableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: NewsItemCell.identifier, for: indexPath) as! NewsItemCell
 
-        let item = newsItems[indexPath.row]
-        cell.configure(image: .checkmark, title: item, author: item, description: item)
+        let item = articles.value[indexPath.row]
+        cell.configure(article: item, delegate: newsItemDelegate)
 
         return cell
     }
@@ -80,20 +113,24 @@ extension NewsPaginatingTableViewController {
             preconditionFailure("Only one section must exist in pagination table.")
         }
 
-        return newsItems.count
+        return articles.value.count
     }
 }
 
 #Preview {
     class Sample: NewsPaginatingTableViewControllerDelegate {
+        var isLoadingPage: Bool = false
         func didReachEndOfPage() {
             print("End of page reached")
         }
     }
 
-    let contentVC = NewsPaginatingTableViewController()
     let sample = Sample()
-    contentVC.delegate = sample
+    let contentVC = NewsPaginatingTableViewController(
+        delegate: sample,
+        newsItemDelegate: nil,
+        articles: CurrentValueSubject<[Article], Never>(Article.preview).toReadOnlyCurrentValuePublisher()
+    )
     let vc = UINavigationController(rootViewController: contentVC)
 
     return vc

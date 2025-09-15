@@ -7,10 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A3950A102E761A6000F62E4A /* NewsAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A39627B42E5BE1BF00905086 /* NewsAPI.framework */; };
-		A3950A112E761A6000F62E4A /* NewsAPI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A39627B42E5BE1BF00905086 /* NewsAPI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A39627B52E5BE1BF00905086 /* NewsAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A39627B42E5BE1BF00905086 /* NewsAPI.framework */; };
 		A39627B62E5BE1BF00905086 /* NewsAPI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A39627B42E5BE1BF00905086 /* NewsAPI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		A3D63BD42E76212A00855853 /* NewsAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A3D63BD32E76212A00855853 /* NewsAPI.framework */; };
+		A3D63BD52E76212A00855853 /* NewsAPI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A3D63BD32E76212A00855853 /* NewsAPI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -31,17 +31,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		A3950A122E761A6000F62E4A /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				A3950A112E761A6000F62E4A /* NewsAPI.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		A39627B72E5BE1BF00905086 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -49,6 +38,17 @@
 			dstSubfolderSpec = 10;
 			files = (
 				A39627B62E5BE1BF00905086 /* NewsAPI.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A3D63BD62E76212A00855853 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				A3D63BD52E76212A00855853 /* NewsAPI.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -61,6 +61,8 @@
 		A39627942E5BE17400905086 /* News API ClientTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "News API ClientTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A396279E2E5BE17400905086 /* News API ClientUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "News API ClientUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A39627B42E5BE1BF00905086 /* NewsAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = NewsAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A3D63BCF2E761DBF00855853 /* NewsAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = NewsAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A3D63BD32E76212A00855853 /* NewsAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = NewsAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -94,7 +96,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A3950A102E761A6000F62E4A /* NewsAPI.framework in Frameworks */,
+				A3D63BD42E76212A00855853 /* NewsAPI.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -147,6 +149,8 @@
 		A39627B32E5BE1BF00905086 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A3D63BD32E76212A00855853 /* NewsAPI.framework */,
+				A3D63BCF2E761DBF00855853 /* NewsAPI.framework */,
 				A39627B42E5BE1BF00905086 /* NewsAPI.framework */,
 			);
 			name = Frameworks;
@@ -162,7 +166,7 @@
 				A39509752E74755B00F62E4A /* Sources */,
 				A39509762E74755B00F62E4A /* Frameworks */,
 				A39509772E74755B00F62E4A /* Resources */,
-				A3950A122E761A6000F62E4A /* Embed Frameworks */,
+				A3D63BD62E76212A00855853 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -375,11 +379,13 @@
 				DEVELOPMENT_TEAM = KJ7YS82G45;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = NewsiOS/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Headlines;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.news";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 18;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -408,11 +414,13 @@
 				DEVELOPMENT_TEAM = KJ7YS82G45;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = NewsiOS/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Headlines;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.news";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 18;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

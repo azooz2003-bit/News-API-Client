@@ -1,0 +1,54 @@
+[
+  {
+    "source": {
+      "id": "techcrunch",
+      "name": "TechCrunch"
+    },
+    "author": "Sarah Johnson",
+    "title": "Apple Announces New iPhone Features for 2025",
+    "description": "Apple unveils significant camera improvements and battery life enhancements in their latest smartphone lineup.",
+    "url": "https://apple.com",
+    "url_to_image": "https://picsum.photos/600/600?random=1",
+    "published_at": "2025-01-15T10:30:00Z",
+    "content": "Apple's latest iPhone announcement brings several key improvements to their flagship device. The new camera system features enhanced low-light performance and improved computational photography capabilities..."
+  },
+  {
+    "source": {
+      "id": null,
+      "name": "Reuters"
+    },
+    "author": "Michael Chen",
+    "title": "Global Climate Summit Reaches Historic Agreement",
+    "description": "World leaders commit to ambitious carbon reduction targets in landmark environmental deal.",
+    "url": "https://google.com",
+    "url_to_image": "https://picsum.photos/400/300?random=2",
+    "published_at": "2025-01-14T16:45:00Z",
+    "content": "Representatives from 195 countries have signed a comprehensive climate agreement that sets binding emissions targets for the next decade."
+  },
+  {
+    "source": {
+      "id": "bbc-news",
+      "name": "BBC News"
+    },
+    "author": null,
+    "title": "SpaceX Successfully Launches Mars Mission",
+    "description": "The private space company achieves another milestone with the launch of its advanced Mars exploration vehicle.",
+    "url": "https://github.com",
+    "url_to_image": null,
+    "published_at": "2025-01-13T09:15:00Z",
+    "content": "SpaceX has successfully launched its most ambitious Mars mission to date, sending an advanced rover and communication satellite toward the Red Planet."
+  },
+  {
+    "source": {
+      "id": "cnn",
+      "name": "CNN"
+    },
+    "author": "Emily Rodriguez",
+    "title": "Breakthrough in Quantum Computing Research",
+    "description": "Scientists achieve new record in quantum computing stability, bringing practical applications closer to reality.",
+    "url": "https://stackoverflow.com",
+    "url_to_image": "https://picsum.photos/500/200?random=3",
+    "published_at": "2025-01-12T14:20:00Z",
+    "content": "Researchers at MIT have demonstrated a new quantum computing system that maintains coherence for unprecedented durations."
+  }
+]
