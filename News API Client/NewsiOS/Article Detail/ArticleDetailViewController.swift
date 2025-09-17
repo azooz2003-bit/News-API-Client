@@ -83,7 +83,7 @@ class ArticleDetailViewController: UIViewController {
     }
 
     private func setupToolbar() {
-        favoriteTBItem = UIBarButtonItem(image: .heartFilled, style: .plain, target: self, action: #selector(favoriteTapped))
+        favoriteTBItem = UIBarButtonItem(image: isFavorite ? .heartFilled : .heartEmpty, style: .plain, target: self, action: #selector(favoriteTapped))
         favoriteTBItem.tintColor = .systemBlue
         self.setToolbarItems([
             favoriteTBItem
