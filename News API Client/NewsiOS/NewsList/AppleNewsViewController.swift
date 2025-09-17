@@ -79,7 +79,7 @@ extension AppleNewsViewController: NewsPaginatingTableViewControllerDelegate {
     }
 }
 
-extension AppleNewsViewController: NewsItemCellDelegate {
+extension AppleNewsViewController: NewsItemDelegate {
     func isFavorite(_ article: Article) -> Bool {
         UserDefaults.favoriteArticles.contains(where: {_ in article.id == article.id})
     }

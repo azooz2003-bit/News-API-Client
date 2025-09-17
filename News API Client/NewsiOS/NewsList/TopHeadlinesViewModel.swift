@@ -79,7 +79,7 @@ class TopHeadlinesViewModel {
 
             if let self {
                 self.articles.send(fetchedArticles)
-                nextPage = 1
+                nextPage = 2
             }
         }
     }

@@ -14,4 +14,7 @@ extension UIImage {
     static let heartEmpty = UIImage(systemName: "heart") ?? UIImage()
     static let photo = UIImage(systemName: "photo") ?? UIImage()
     static let ellipsis = UIImage(systemName: "ellipsis") ?? UIImage()
+    static let rightUpArrow = UIImage(systemName: "arrow.up.forward.square.fill") ?? UIImage()
+    static let person = UIImage(systemName: "person.fill") ?? UIImage()
+    static let time = UIImage(systemName: "clock.fill") ?? UIImage()
 }

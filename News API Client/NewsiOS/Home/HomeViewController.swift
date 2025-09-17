@@ -141,6 +141,8 @@ extension HomeViewController {
         case 1:
             // Handle favorites selection
             // TODO: Navigate to news detail
+            let detailVC = ArticleDetailViewController(article: UserDefaults.favoriteArticles[indexPath.row], delegate: self)
+            navigationController?.pushViewController(detailVC, animated: true)
             break
         default:
             break
@@ -191,7 +193,7 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
     }
 }
 
-extension HomeViewController: NewsItemCellDelegate {
+extension HomeViewController: NewsItemDelegate {
     func isFavorite(_ article: Article) -> Bool {
         UserDefaults.favoriteArticles.contains(where: { $0.id == article.id })
     }

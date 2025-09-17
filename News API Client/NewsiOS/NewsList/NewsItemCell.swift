@@ -8,7 +8,7 @@
 import UIKit
 import NewsAPI
 
-protocol NewsItemCellDelegate: AnyObject {
+protocol NewsItemDelegate: AnyObject {
     func favoritedIsSet(_ isFavorite: Bool, for article: Article)
     func isFavorite(_ article: Article) -> Bool
 }
@@ -62,7 +62,7 @@ class NewsItemCell: UITableViewCell {
         }
     }
     var imageLoadingTask: Task<Void, Never>?
-    weak var delegate: NewsItemCellDelegate?
+    weak var delegate: NewsItemDelegate?
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -162,7 +162,7 @@ class NewsItemCell: UITableViewCell {
         headlineImage.image = nil
     }
 
-    func configure(article: Article, delegate: NewsItemCellDelegate?) {
+    func configure(article: Article, delegate: NewsItemDelegate?) {
         self.article = article
         self.delegate = delegate
 

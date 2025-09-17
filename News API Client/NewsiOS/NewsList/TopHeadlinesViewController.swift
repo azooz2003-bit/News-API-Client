@@ -13,6 +13,9 @@ class TopHeadlinesViewController: UIViewController {
     var tableVC: NewsPaginatingTableViewController!
     var viewModel: TopHeadlinesViewModel
 
+    let searchTerm = PassthroughSubject<String?, Never>()
+    var cancellables: Set<AnyCancellable> = []
+
     init() {
         viewModel = TopHeadlinesViewModel()
         super.init(nibName: nil, bundle: nil)
@@ -47,7 +50,21 @@ class TopHeadlinesViewController: UIViewController {
     }
 
     private func setupSearchBar() {
+        let searchController = UISearchController(searchResultsController: nil)
+        searchController.delegate = self
+        searchController.obscuresBackgroundDuringPresentation = true
+        searchController.searchBar.delegate = self
+        searchController.searchBar.placeholder = "Search Articles"
 
+        navigationItem.searchController = searchController
+
+        searchTerm
+            .receive(on: DispatchQueue.main)
+            .debounce(for: .seconds(2), scheduler: DispatchQueue.main)
+            .sink { [weak self] searchTerm in
+                self?.viewModel.refreshArticles(keyword: searchTerm)
+            }
+            .store(in: &cancellables)
     }
 
     private func setupPaginatingTableView() {
@@ -86,7 +103,7 @@ extension TopHeadlinesViewController: NewsPaginatingTableViewControllerDelegate 
     }
 }
 
-extension TopHeadlinesViewController: NewsItemCellDelegate {
+extension TopHeadlinesViewController: NewsItemDelegate {
     func isFavorite(_ article: Article) -> Bool {
         UserDefaults.favoriteArticles.contains(where: { $0.id == article.id })
     }
@@ -97,5 +114,17 @@ extension TopHeadlinesViewController: NewsItemCellDelegate {
         } else {
             UserDefaults.favoriteArticles.removeAll { $0.id == article.id }
         }
+    }
+}
+
+extension TopHeadlinesViewController: UISearchControllerDelegate, UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        print("New query")
+        searchTerm.send(searchText)
+    }
+
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        print("Cancelled")
+        searchTerm.send(nil)
     }
 }

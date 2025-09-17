@@ -16,12 +16,12 @@ protocol NewsPaginatingTableViewControllerDelegate: AnyObject {
 
 class NewsPaginatingTableViewController: UITableViewController {
     weak var delegate: NewsPaginatingTableViewControllerDelegate?
-    weak var newsItemDelegate: NewsItemCellDelegate?
+    weak var newsItemDelegate: NewsItemDelegate?
 
     private var articles: ReadOnlyCurrentValuePublisher<[Article], Never>
     private var cancellables: Set<AnyCancellable> = []
 
-    init(delegate: NewsPaginatingTableViewControllerDelegate?, newsItemDelegate: NewsItemCellDelegate?, articles: ReadOnlyCurrentValuePublisher<[Article], Never>) {
+    init(delegate: NewsPaginatingTableViewControllerDelegate?, newsItemDelegate: NewsItemDelegate?, articles: ReadOnlyCurrentValuePublisher<[Article], Never>) {
         self.delegate = delegate
         self.newsItemDelegate = newsItemDelegate
         self.articles = articles
@@ -87,8 +87,9 @@ extension NewsPaginatingTableViewController {
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        // TODO: push detailVC instead
-        navigationController?.pushViewController(HomeViewController(), animated: true)
+
+        let detailVC = ArticleDetailViewController(article: self.articles.value[indexPath.row], delegate: newsItemDelegate)
+        navigationController?.pushViewController(detailVC, animated: true)
     }
 }
 
