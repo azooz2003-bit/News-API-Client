@@ -10,7 +10,7 @@ import NewsAPI
 
 class HomeViewController: UITableViewController {
     var browsingTabs: [BrowsingTab] {
-        [.topHeadlines, .apple]
+        [.topHeadlines, .apple, .apple, .topHeadlines]
     }
     var moreButton: UIBarButtonItem!
 
@@ -46,6 +46,10 @@ class HomeViewController: UITableViewController {
                 Preferences.shouldSimulateLongImageLoadTime.toggle()
                 self?.setupPrefMenu()
             }),
+            UIAction(title: "Simulate long articles loading", image: Preferences.shouldSimulateLongArticlesLoading ? .checkmark : nil, handler: { [weak self] action in
+                Preferences.shouldSimulateLongArticlesLoading.toggle()
+                self?.setupPrefMenu()
+            }),
         ])
 
         self.moreButton.menu = menu
@@ -64,7 +68,9 @@ class HomeViewController: UITableViewController {
         tableView.showsVerticalScrollIndicator = false
         tableView.separatorStyle = .none
         tableView.estimatedRowHeight = 200
-        tableView.contentInset.top = 20
+        let spacerView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 20))
+        spacerView.backgroundColor = .clear
+        tableView.tableHeaderView = spacerView
 
         tableView.register(BrowsingTabsContainerCell.self, forCellReuseIdentifier: BrowsingTabsContainerCell.identifier)
         tableView.register(UINib(nibName: NewsItemCell.identifier, bundle: nil), forCellReuseIdentifier: NewsItemCell.identifier)
@@ -99,7 +105,6 @@ extension HomeViewController {
             case 1:
                 let cell = tableView.dequeueReusableCell(withIdentifier: NewsItemCell.identifier) as? NewsItemCell
                 cell?.configure(article: UserDefaults.favoriteArticles[indexPath.row], delegate: self)
-                // TODO: set isFav properly (UserDefaults)
                 return cell
             default:
                 preconditionFailure("Table view section count should never exceed 2.")

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 import NewsAPI
 
 class AppleNewsViewController: UIViewController {
@@ -38,6 +39,11 @@ class AppleNewsViewController: UIViewController {
         navigationItem.rightBarButtonItems = [
             UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(refresh))
         ]
+
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
+
+        tableVC.tableView.refreshControl = refreshControl
     }
 
     @objc private func refresh() {
@@ -67,10 +73,10 @@ class AppleNewsViewController: UIViewController {
 extension AppleNewsViewController: NewsPaginatingTableViewControllerDelegate {
     var isLoadingPage: Bool {
         get {
-            viewModel.isLoadingPage
+            viewModel.isLoadingPage.value
         }
         set {
-            viewModel.isLoadingPage = newValue
+            viewModel.isLoadingPage.send(newValue)
         }
     }
 

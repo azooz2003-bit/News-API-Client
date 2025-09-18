@@ -41,6 +41,7 @@ class NewsPaginatingTableViewController: UITableViewController {
         articles
             .receive(on: DispatchQueue.main)
             .sink { [weak self] articles in
+                self?.tableView.refreshControl?.endRefreshing()
                 self?.tableView.reloadData()
             }
             .store(in: &cancellables)

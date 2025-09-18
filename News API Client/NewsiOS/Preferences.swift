@@ -29,4 +29,11 @@ struct Preferences {
             UserDefaults.standard.set(newValue, forKey: "shouldSimulateLongImageLoadTime")
         }
     }
+    static var shouldSimulateLongArticlesLoading: Bool {
+        get {
+            UserDefaults.standard.bool(forKey: "shouldSimulateLongArticlesLoading")
+        } set {
+            UserDefaults.standard.set(newValue, forKey: "shouldSimulateLongArticlesLoading")
+        }
+    }
 }

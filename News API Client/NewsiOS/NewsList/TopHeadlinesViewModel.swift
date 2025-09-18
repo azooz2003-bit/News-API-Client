@@ -13,7 +13,7 @@ class TopHeadlinesViewModel {
     let articles = CurrentValueSubject<[Article], Never>([])
     var pageSize = 10
     var nextPage = 1
-    var isLoadingPage: Bool = false
+    var isLoadingPage: CurrentValueSubject<Bool, Never> = .init(false)
     var fetchingTask: Task<Void, Never>?
 
     // TODO: make sure no more than one fetch occurs at once.
@@ -21,14 +21,17 @@ class TopHeadlinesViewModel {
     private func topHeadlines(forPage page: Int = 1, keyword: String?) async -> [Article] {
         guard !Task.isCancelled else { return [] }
 
-        self.isLoadingPage = true
-        defer { self.isLoadingPage = false }
+        self.isLoadingPage.send(true)
+        defer { self.isLoadingPage.send(false) }
 
         let request = TopHeadlinesEndpoint(country: "us", category: nil, q: keyword, pageSize: pageSize, page: page)
 
         do {
+            if Preferences.shouldSimulateLongArticlesLoading {
+                try await Task.sleep(nanoseconds: 4_000_000_000)
+            }
+
             guard !Preferences.mockDataEnabled else {
-                try await Task.sleep(nanoseconds: 2_000_000_000)
                 return Article.preview
             }
 
@@ -63,24 +66,18 @@ class TopHeadlinesViewModel {
         }
     }
 
-    func refreshArticles(keyword: String? = nil) {
+    func refreshArticles(keyword: String? = nil, onRefreshComplete: (() -> Void)? = nil) {
         fetchingTask?.cancel()
         fetchingTask = Task { [weak self] in
-            guard !Task.isCancelled else { return }
+            guard !Task.isCancelled, let self else { return }
 
-            let fetchedArticles: [Article]
-            if let self {
-                fetchedArticles = await self.topHeadlines(forPage: 1, keyword: keyword)
-            } else {
-                return
-            }
+            let fetchedArticles = await self.topHeadlines(forPage: 1, keyword: keyword)
 
             guard !Task.isCancelled else { return }
 
-            if let self {
-                self.articles.send(fetchedArticles)
-                nextPage = 2
-            }
+            self.articles.send(fetchedArticles)
+            nextPage = 2
+            onRefreshComplete?()
         }
     }
 }

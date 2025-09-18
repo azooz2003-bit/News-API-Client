@@ -11,6 +11,7 @@ import NewsAPI
 
 class TopHeadlinesViewController: UIViewController {
     var tableVC: NewsPaginatingTableViewController!
+    var activityIndicator: UIActivityIndicatorView!
     var viewModel: TopHeadlinesViewModel
 
     let searchTerm = PassthroughSubject<String?, Never>()
@@ -39,22 +40,40 @@ class TopHeadlinesViewController: UIViewController {
 
     private func setupNavigationBar() {
         navigationItem.title = "Top Headlines"
+        navigationItem.hidesSearchBarWhenScrolling = false
 
-        navigationItem.rightBarButtonItems = [
-            UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(refresh))
-        ]
+        activityIndicator = UIActivityIndicatorView()
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: activityIndicator)
+        if #available(iOS 26.0, *) {
+            navigationItem.rightBarButtonItem?.hidesSharedBackground = true
+        }
+        self.toolbarItems = []
+
+        viewModel.isLoadingPage
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isLoadingPage in
+                if isLoadingPage {
+                    self?.activityIndicator.startAnimating()
+                } else {
+                    self?.activityIndicator.stopAnimating()
+                }
+            }
+            .store(in: &cancellables)
     }
 
     @objc private func refresh() {
+        print("Refreshing...")
         viewModel.refreshArticles()
     }
 
     private func setupSearchBar() {
         let searchController = UISearchController(searchResultsController: nil)
         searchController.delegate = self
-        searchController.obscuresBackgroundDuringPresentation = true
+        searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.delegate = self
+        searchController.searchResultsUpdater = self
         searchController.searchBar.placeholder = "Search Articles"
+        searchController.automaticallyShowsCancelButton = true
 
         navigationItem.searchController = searchController
 
@@ -62,6 +81,7 @@ class TopHeadlinesViewController: UIViewController {
             .receive(on: DispatchQueue.main)
             .debounce(for: .seconds(2), scheduler: DispatchQueue.main)
             .sink { [weak self] searchTerm in
+                print("Querying for new search term ...")
                 self?.viewModel.refreshArticles(keyword: searchTerm)
             }
             .store(in: &cancellables)
@@ -71,18 +91,25 @@ class TopHeadlinesViewController: UIViewController {
         self.tableVC = NewsPaginatingTableViewController(delegate: self, newsItemDelegate: self, articles: viewModel.articles.toReadOnlyCurrentValuePublisher())
 
         self.addChild(tableVC)
+        view.addSubview(tableVC.tableView)
+        tableVC.didMove(toParent: self)
 
-        view.addSubview(tableVC.view)
-
-        tableVC.view.translatesAutoresizingMaskIntoConstraints = false
+        tableVC.tableView.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
-            tableVC.view.topAnchor.constraint(equalTo: view.topAnchor),
-            tableVC.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableVC.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableVC.view.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            tableVC.tableView.topAnchor.constraint(equalTo: view.topAnchor),
+            tableVC.tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableVC.tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tableVC.tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
 
+        // Refresh control
+
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
+        refreshControl.attributedTitle = NSAttributedString(string: "Fetching Articles ...")
+
+        tableVC.tableView.refreshControl = refreshControl
     }
 
 }
@@ -90,10 +117,10 @@ class TopHeadlinesViewController: UIViewController {
 extension TopHeadlinesViewController: NewsPaginatingTableViewControllerDelegate {
     var isLoadingPage: Bool {
         get {
-            viewModel.isLoadingPage
+            viewModel.isLoadingPage.value
         }
         set {
-            viewModel.isLoadingPage = newValue
+            viewModel.isLoadingPage.send(newValue)
         }
     }
     
@@ -117,14 +144,16 @@ extension TopHeadlinesViewController: NewsItemDelegate {
     }
 }
 
-extension TopHeadlinesViewController: UISearchControllerDelegate, UISearchBarDelegate {
+extension TopHeadlinesViewController: UISearchControllerDelegate, UISearchBarDelegate, UISearchResultsUpdating {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        print("New query")
-        searchTerm.send(searchText)
+
     }
 
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        print("Cancelled")
-        searchTerm.send(nil)
+
+    }
+
+    func updateSearchResults(for searchController: UISearchController) {
+        searchTerm.send(searchController.searchBar.text)
     }
 }
