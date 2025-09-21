@@ -50,6 +50,18 @@ class HomeViewController: UITableViewController {
                 Preferences.shouldSimulateLongArticlesLoading.toggle()
                 self?.setupPrefMenu()
             }),
+            UIMenu(title: "Select detail pres style", children: UIModalPresentationStyle.allCases.map { style in
+                UIAction(title: style.description, image: Preferences.detailPresentationStyle == style ? .checkmark : nil, handler: { [weak self] action in
+                    Preferences.detailPresentationStyle = style
+                    self?.setupPrefMenu()
+                })
+            }),
+            UIMenu(title: "Select selection action", children: PresentationMode.allCases.map { mode in
+                UIAction(title: mode.rawValue, image: Preferences.presentationMode == mode ? .checkmark : nil, handler: { [weak self] action in
+                    Preferences.presentationMode = mode
+                    self?.setupPrefMenu()
+                })
+            })
         ])
 
         self.moreButton.menu = menu
@@ -145,10 +157,36 @@ extension HomeViewController {
             break
         case 1:
             // Handle favorites selection
-            // TODO: Navigate to news detail
-            let detailVC = ArticleDetailViewController(article: UserDefaults.favoriteArticles[indexPath.row], delegate: self)
-            navigationController?.pushViewController(detailVC, animated: true)
-            break
+            let article = UserDefaults.favoriteArticles[indexPath.row]
+
+            switch Preferences.presentationMode {
+            case .modal:
+                let detailVC = ArticleDetailViewController(article: article, delegate: self)
+
+                let navVC = UINavigationController(rootViewController: detailVC)
+                navVC.modalPresentationStyle = Preferences.detailPresentationStyle
+                present(navVC, animated: true)
+            case .push:
+                let detailVC = ArticleDetailViewController(article: article, delegate: self)
+
+                navigationController?.pushViewController(detailVC, animated: true)
+            case .alert, .actionSheet:
+                let alrt = UIAlertController(title: article.title, message: article.description ?? "", preferredStyle: Preferences.presentationMode.asAlertControllerStyle ?? .alert)
+                alrt.addAction(UIAlertAction(title: "Sure", style: .default, handler: { _ in
+                    print("I've been pressed!!!!")
+                }))
+                alrt.addAction(UIAlertAction(title: "Sure", style: .default, handler: { _ in
+                    print("I've been pressed!!!!")
+                }))
+                alrt.addAction(UIAlertAction(title: "Sure", style: .default, handler: { _ in
+                    print("I've been pressed!!!!")
+                }))
+                alrt.addAction(UIAlertAction(title: "Sure", style: .default, handler: { _ in
+                    print("I've been pressed!!!!")
+                }))
+
+                present(alrt, animated: true)
+            }
         default:
             break
         }
@@ -220,4 +258,41 @@ extension HomeViewController: NewsItemDelegate {
     let vc = UINavigationController(rootViewController: homeVC)
 
     return vc
+}
+
+extension UIModalPresentationStyle: @retroactive CaseIterable {
+    public var description: String {
+        switch self {
+        case .automatic: return "Automatic"
+        case .pageSheet: return "Page Sheet"
+        case .formSheet: return "Form Sheet"
+        case .currentContext: return "Current Context"
+        case .fullScreen: return "Full Screen"
+        case .overFullScreen: return "Over Full Screen"
+        case .overCurrentContext: return "Over Current Context"
+        case .custom:
+            return "Custom"
+        case .popover:
+            return "Popover"
+        case .none:
+            return "None"
+        @unknown default:
+            return "(new style)"
+        }
+    }
+
+    public static var allCases: [UIModalPresentationStyle] {
+        [
+            .automatic,
+            .pageSheet,
+            .formSheet,
+            .currentContext,
+            .fullScreen,
+            .overFullScreen,
+            .overCurrentContext,
+            .popover
+        ]
+    }
+
+
 }

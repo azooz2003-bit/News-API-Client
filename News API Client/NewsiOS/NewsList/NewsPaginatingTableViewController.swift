@@ -89,8 +89,27 @@ extension NewsPaginatingTableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        let detailVC = ArticleDetailViewController(article: self.articles.value[indexPath.row], delegate: newsItemDelegate)
-        navigationController?.pushViewController(detailVC, animated: true)
+        let article = self.articles.value[indexPath.row]
+
+        switch Preferences.presentationMode {
+        case .modal:
+            let detailVC = ArticleDetailViewController(article: article, delegate: newsItemDelegate)
+
+            let navVC = UINavigationController(rootViewController: detailVC)
+            navVC.modalPresentationStyle = Preferences.detailPresentationStyle
+            present(navVC, animated: true)
+        case .push:
+            let detailVC = ArticleDetailViewController(article: article, delegate: newsItemDelegate)
+
+            navigationController?.pushViewController(detailVC, animated: true)
+        case .alert, .actionSheet:
+            let alrt = UIAlertController(title: article.title, message: article.description ?? "", preferredStyle: Preferences.presentationMode.asAlertControllerStyle ?? .alert)
+            alrt.addAction(UIAlertAction(title: "Sure", style: .destructive, handler: { _ in
+                print("I've been pressed!!!!")
+            }))
+
+            present(alrt, animated: true)
+        }
     }
 }
 

@@ -28,12 +28,7 @@ class BrowsingTabsContainerCell: UITableViewCell {
 
     private func setupCollectionView() {
 
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .vertical
-        layout.minimumInteritemSpacing = Constants.spacing
-        layout.minimumLineSpacing = Constants.spacing
-
-        collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView = UICollectionView(frame: .zero, collectionViewLayout: createCompositionalLayout())
         collectionView.isScrollEnabled = false
         collectionView.backgroundColor = .clear
         collectionView.register(BrowsingTabCell.self, forCellWithReuseIdentifier: BrowsingTabCell.identifier)
@@ -43,10 +38,29 @@ class BrowsingTabsContainerCell: UITableViewCell {
         setupConstraints()
     }
 
+    private func createCompositionalLayout() -> UICollectionViewCompositionalLayout {
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth((1/Constants.numberOfColumns)), heightDimension: .fractionalHeight(1.0))
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(Constants.itemHeight))
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+        group.interItemSpacing = .fixed(Constants.spacing)
+
+        let section = NSCollectionLayoutSection(group: group)
+        section.interGroupSpacing = Constants.spacing
+        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: Constants.horizontalSectionPadding, bottom: 0, trailing: Constants.horizontalSectionPadding)
+
+        let config = UICollectionViewCompositionalLayoutConfiguration()
+        config.scrollDirection = .vertical
+        let layout = UICollectionViewCompositionalLayout(section: section, configuration: config)
+
+        return layout
+    }
+
     private func setupConstraints() {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
 
-        collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: 200)
+        collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: 0)
         NSLayoutConstraint.activate([
             collectionView.topAnchor.constraint(equalTo: contentView.topAnchor),
             collectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
@@ -61,33 +75,18 @@ class BrowsingTabsContainerCell: UITableViewCell {
         collectionView.dataSource = delegate
         collectionView.delegate = delegate
 
-        if contentView.bounds.width > 0 {
-            setCollectionViewLayoutForCurrentBounds()
-        }
+        setCollectionViewLayoutForCurrentBounds()
 
-        collectionView.reloadData()
+//        collectionView.reloadData() NOTE: data doesn't change anyways
     }
 
     // MARK: Layout
 
-    override func layoutSubviews() {
-        super.layoutSubviews()
-
-        setCollectionViewLayoutForCurrentBounds()
-    }
-
     private func setCollectionViewLayoutForCurrentBounds() {
-        guard let datasource = collectionView.dataSource,
-            let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout,
-            contentView.bounds.width > 0 else {
-            print(#function + ": Failed to cast layout.")
+        guard let datasource = collectionView.dataSource else {
+            print(#function + ": No data source available.")
             return
         }
-
-        layout.sectionInset = UIEdgeInsets(top: 0, left: Constants.horizontalSectionPadding, bottom: 0, right: Constants.horizontalSectionPadding)
-
-        let itemWidth = Constants.itemWidth(within: contentView)
-        layout.itemSize = CGSize(width: itemWidth, height: Constants.itemHeight)
 
         let itemCount = datasource.collectionView(collectionView, numberOfItemsInSection: 0)
         collectionViewHeightConstraint.constant = Constants.collectionViewHeight(itemCount: CGFloat(itemCount))
@@ -103,12 +102,6 @@ extension BrowsingTabsContainerCell {
 
         static func numberOfRows(itemCount: CGFloat) -> CGFloat {
             return ceil(itemCount / numberOfColumns)
-        }
-        static func availableWidth(within container: UIView) -> CGFloat {
-            container.bounds.width - (2 * Constants.horizontalSectionPadding) - spacing*(numberOfColumns-1)
-        }
-        static func itemWidth(within container: UIView) -> CGFloat {
-            availableWidth(within: container) / numberOfColumns
         }
         static func collectionViewHeight(itemCount: CGFloat) -> CGFloat {
             let numRows = numberOfRows(itemCount: itemCount)

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 struct Preferences {
     static var showBrowsingTabLabelBackground: Bool {
@@ -34,6 +35,43 @@ struct Preferences {
             UserDefaults.standard.bool(forKey: "shouldSimulateLongArticlesLoading")
         } set {
             UserDefaults.standard.set(newValue, forKey: "shouldSimulateLongArticlesLoading")
+        }
+    }
+    static var detailPresentationStyle: UIModalPresentationStyle {
+        get {
+            if let sheetStyle = UIModalPresentationStyle(rawValue: UserDefaults.standard.integer(forKey: "detailPresentationStyle")) {
+                return sheetStyle
+            } else {
+                UserDefaults.standard.set(UIModalPresentationStyle.pageSheet.rawValue, forKey: "detailPresentationStyle")
+                return .pageSheet
+            }
+        } set {
+            UserDefaults.standard.set(newValue.rawValue, forKey: "detailPresentationStyle")
+        }
+    }
+    static var presentationMode: PresentationMode {
+        get {
+            if let modeRaw = UserDefaults.standard.string(forKey: "presentationMode"), let mode = PresentationMode(rawValue: modeRaw) {
+                return mode
+            } else {
+                UserDefaults.standard.set(PresentationMode.push.rawValue, forKey: "presentationMode")
+                return .push
+            }
+        } set {
+            UserDefaults.standard.set(newValue.rawValue, forKey: "presentationMode")
+        }
+    }
+}
+
+
+enum PresentationMode: String, CaseIterable {
+    case push, modal, alert, actionSheet
+
+    var asAlertControllerStyle: UIAlertController.Style? {
+        switch self {
+        case .alert: return .alert
+        case .actionSheet: return .actionSheet
+        default: return nil
         }
     }
 }

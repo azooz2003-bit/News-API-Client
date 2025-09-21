@@ -250,6 +250,8 @@ class ArticleDetailViewController: UIViewController {
     }
 
     deinit {
-        titleOverlayBoundsObservation.invalidate()
+        if let titleOverlayBoundsObservation {
+            titleOverlayBoundsObservation.invalidate()
+        }
     }
 }
