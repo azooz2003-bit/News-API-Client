@@ -185,9 +185,6 @@ class ArticleDetailViewController: UIViewController {
 
     private func setupNavigationBar() {
         navigationItem.title = "Detail"
-        navigationItem.rightBarButtonItem = UIBarButtonItem(systemItem: .camera, primaryAction: UIAction(handler: { _ in
-            self.updateImage(.checkmark)
-        }))
     }
 
     private func setupScrollView() {
