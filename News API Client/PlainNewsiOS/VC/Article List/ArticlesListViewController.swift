@@ -6,11 +6,19 @@
 //
 
 import UIKit
+import Combine
+
+protocol ArticleListViewControllerDelegate: AnyObject {
+    func didSelectArticle(_ article: ArticleItem)
+}
 
 class ArticlesListViewController: UIViewController {
     var dataSourceController: ArticlesDataSourceController!
     var repository: ArticlesRepository!
     var tableView: UITableView!
+    weak var delegate: ArticleListViewControllerDelegate?
+
+    var cancellables: Set<AnyCancellable> = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,13 +30,28 @@ class ArticlesListViewController: UIViewController {
         dataSourceController = ArticlesDataSourceController(tableView: tableView, repository: repository)
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        repository.articlesSubject
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] articles in
+                self?.dataSourceController.updateSnapshot()
+            }
+            .store(in: &cancellables)
+    }
+
     private func setupNavigationBar() {
         self.navigationItem.title = "Plain News"
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(refresh))
 
         let appearance = UINavigationBarAppearance()
         appearance.configureWithTransparentBackground()
-        appearance.titleTextAttributes = [.foregroundColor : UIColor.blue]
+        appearance.titleTextAttributes = [.foregroundColor : UIColor.systemBlue]
+
+        self.navigationItem.standardAppearance = appearance
+        self.navigationItem.scrollEdgeAppearance = appearance
+        self.navigationItem.compactAppearance = appearance
     }
 
     @objc func refresh() {
@@ -66,12 +89,7 @@ extension ArticlesListViewController: UITableViewDelegate {
             repository.favArticles[indexPath.row]
         } else { repository.otherArticles[indexPath.row]}
 
-        let alert = UIAlertController(title: article.title, message: article.description, preferredStyle: .alert)
-
-        alert.addAction(UIAlertAction(title: "Ok", style: .default))
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-
-        present(alert, animated: true)
+        delegate?.didSelectArticle(article)
     }
 
     func tableView(_ tableView: UITableView, accessoryButtonTappedForRowWith indexPath: IndexPath) {
@@ -88,11 +106,30 @@ extension ArticlesListViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        40
+        30
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        60
+        UITableView.automaticDimension
+    }
+
+    func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        guard let cell = tableView.cellForRow(at: indexPath) as? ArticleCell else {
+            return nil
+        }
+
+        let action = UIContextualAction(style: .normal, title: nil, handler: { [weak self, weak cell] action, view, completionHandler in
+            guard let cell else {
+                completionHandler(false)
+                return
+            }
+
+            self?.dataSourceController.favoriteButtonTapped(cell, article: cell.article)
+            completionHandler(true)
+        })
+        action.image = UIImage(systemName: cell.article.isFavorite ? "heart" : "heart.fill")
+
+        return .init(actions: [action])
     }
 }
 

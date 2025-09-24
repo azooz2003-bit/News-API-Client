@@ -21,13 +21,6 @@ class ArticlesDataSourceController {
         self.repository = repository
         self.dataSource = self.createDataSource(for: tableView, withDelegate: self)
         self.tableView.dataSource = dataSource
-
-        repository.articlesSubject
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] articles in
-                self?.updateSnapshot()
-            }
-            .store(in: &cancellables)
     }
 
     private func createDataSource(for tableView: UITableView, withDelegate delegate: ArticleCellDelegate?) -> UITableViewDiffableDataSource<Section, ArticleItem> {

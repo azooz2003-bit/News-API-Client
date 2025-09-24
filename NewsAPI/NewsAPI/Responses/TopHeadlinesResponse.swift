@@ -21,7 +21,7 @@ public struct TopHeadlinesResponse: Decodable, PaginationResulting {
 
 public struct Article: Codable, Identifiable, Equatable {
     public var id: URL { url }
-    public struct Source: Decodable {
+    public struct Source: Codable, Equatable {
         public let id: String?
         public let name: String
     }
@@ -33,4 +33,5 @@ public struct Article: Codable, Identifiable, Equatable {
     public let urlToImage: URL?
     public let publishedAt: Date?
     public let content: String?
+    public let source: Source?
 }

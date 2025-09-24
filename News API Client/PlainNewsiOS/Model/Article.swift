@@ -19,6 +19,7 @@ struct ArticleItem {
     let urlToImage: URL?
     let publishedAt: Date?
     let content: String?
+    let sourceName: String?
 
     var isFavorite: Bool {
         get {
@@ -37,6 +38,7 @@ struct ArticleItem {
         urlToImage = article.urlToImage
         publishedAt = article.publishedAt
         content = article.content
+        self.sourceName = article.source?.name
     }
 }
 
