@@ -34,11 +34,11 @@ class URLViewController: UIViewController {
     private func setupTopToolbar() {
         toolbar = UIToolbar()
         toolbar.items = [
-            UIBarButtonItem(barButtonSystemItem: .cancel, target: nil, action: nil),
+            UIBarButtonItem(barButtonSystemItem: .cancel, target: nil, action: #selector(handleCancel)),
             .flexibleSpace(),
             UIBarButtonItem(title: url.absoluteString, image: nil, target: nil, action: nil),
             .flexibleSpace(),
-            UIBarButtonItem(barButtonSystemItem: .refresh, target: nil, action: nil)
+            UIBarButtonItem(barButtonSystemItem: .refresh, target: nil, action: #selector(handleRefresh))
         ]
 
         toolbar.translatesAutoresizingMaskIntoConstraints = false
@@ -50,6 +50,16 @@ class URLViewController: UIViewController {
             toolbar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
         ])
         view.addSubview(toolbar)
+    }
+
+    @objc
+    private func handleCancel(_ action: UIAction) {
+        dismiss(animated: true, completion: nil)
+    }
+
+    @objc
+    private func handleRefresh(_ action: UIAction) {
+        webView.reload()
     }
 
     private func setupWebView() {
