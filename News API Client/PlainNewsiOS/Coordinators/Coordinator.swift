@@ -21,7 +21,8 @@ class MainCoordinator: NSObject, Coordinator, UINavigationControllerDelegate {
         rootVC.delegate = self
         self.navigationController = UINavigationController(rootViewController: rootVC)
         self.navigationController?.delegate = self
-        self.navigationController?.modalPresentationStyle = .pageSheet
+        self.navigationController?.modalPresentationStyle = .popover
+        self.navigationController?.setToolbarHidden(false, animated: false)
         return navigationController
     }
 
@@ -48,6 +49,11 @@ extension MainCoordinator {
             detailVC.delegate = self
             navigationController?.pushViewController(detailVC, animated: true)
         }
+    }
+
+    func showDescription(_ description: String?) {
+        let vc = DescriptionViewController(description)
+        navigationController?.present(vc, animated: true)
     }
 }
 

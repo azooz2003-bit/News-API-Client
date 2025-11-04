@@ -10,17 +10,12 @@ import OSLog
 
 protocol ArticleDetailViewControllerDelegate: AnyObject {
     func didRequestMore(_ article: ArticleItem)
+    func didRequestDescription(_ article: ArticleItem)
 }
 
 class ArticleDetailViewController: UIViewController {
-    static func create(forArticle article: ArticleItem) -> Self {
-        let storyboard = UIStoryboard(name: String(describing: Self.self), bundle: Bundle(for: Self.self))
-        let vc = storyboard.instantiateViewController(withIdentifier: "ArticleDetailViewController") as! Self
-        vc.article = article
-        return vc
-    }
-
     var article: ArticleItem!
+    weak var delegate: ArticleDetailViewControllerDelegate?
     lazy var contentAttrString: NSAttributedString = {
         guard let content = article?.content else {
             Logger.general.debug("No content found.")
@@ -45,7 +40,6 @@ class ArticleDetailViewController: UIViewController {
         moreAttrString.setAttributes([.foregroundColor : UIColor.systemBlue, .font : UIFont.systemFont(ofSize: 16, weight: .bold)], range: NSRange(location: 0, length: moreAttrString.length))
         return moreAttrString
     }()
-    weak var delegate: ArticleDetailViewControllerDelegate?
 
     // MARK: Views
     lazy var scrollView: UIScrollView = {
@@ -65,7 +59,7 @@ class ArticleDetailViewController: UIViewController {
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 16
-        imageView.backgroundColor = .lightGray
+        imageView.backgroundColor = .secondarySystemBackground
         imageView.layer.borderColor = UIColor.gray.cgColor
         imageView.layer.borderWidth = 2
 
@@ -136,12 +130,7 @@ class ArticleDetailViewController: UIViewController {
         label.numberOfLines = 1
         return label
     }()
-    lazy var dividerView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .label
-        view.clipsToBounds = true
-        return view
-    }()
+    lazy var dividerView: UIDivider = .Horizontal.thinRounded
     lazy var contentTextView: UITextView = {
         let textView = UITextView()
         textView.textColor = .label
@@ -163,6 +152,7 @@ class ArticleDetailViewController: UIViewController {
         self.view.backgroundColor = .systemBackground
 
         setupNavigationBar()
+        setupToolbar()
         setupScrollView()
         setupImageView()
         setupInfoBox()
@@ -175,16 +165,30 @@ class ArticleDetailViewController: UIViewController {
         super.viewWillAppear(animated)
     }
 
-    override func viewDidLayoutSubviews() {
-        dividerView.layer.cornerRadius = dividerView.frame.height / 2
-    }
-
     override func viewDidAppear(_ animated: Bool) {
         self.loadImage()
     }
 
     private func setupNavigationBar() {
         navigationItem.title = "Detail"
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(newImageTapped))
+    }
+
+    private func setupToolbar() {
+        self.toolbarItems = [
+            .flexibleSpace(),
+            UIBarButtonItem(image: .Text.rectangle, style: .plain, target: self, action: #selector(textSymbolTapped))
+        ]
+    }
+
+    @objc
+    private func textSymbolTapped() {
+        delegate?.didRequestDescription(article)
+    }
+
+    @objc
+    private func newImageTapped() {
+        loadImage()
     }
 
     private func setupScrollView() {
@@ -291,7 +295,6 @@ class ArticleDetailViewController: UIViewController {
         NSLayoutConstraint.activate([
             dividerView.widthAnchor.constraint(equalTo: contentView.layoutMarginsGuide.widthAnchor),
             dividerView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            dividerView.heightAnchor.constraint(equalToConstant: 2),
             dividerView.topAnchor.constraint(equalTo: infoBoxStackView.bottomAnchor, constant: 10)
         ])
     }
@@ -356,6 +359,7 @@ class ArticleDetailViewController: UIViewController {
     private func loadImage() {
         guard let url = article?.urlToImage else { return }
 
+        imageView.image = nil
         imagePlaceHolderSpinner.startAnimating()
         
         let task = URLSession.shared.dataTask(with: url) { [weak self] data, _, _ in
@@ -374,4 +378,12 @@ class ArticleDetailViewController: UIViewController {
 
         task.resume()
     }
+}
+
+#Preview {
+    let coordinator = MainCoordinator()
+    let vc = coordinator.start() as! UINavigationController
+    coordinator.showArticle(ArticleItem.preview.first!)
+
+    return vc
 }
